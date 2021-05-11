@@ -1,7 +1,19 @@
 package com.sharshag.reconlib;
 
-public class BaseTransaction {
+import java.util.HashMap;
+import java.util.Map;
 
-    private String testFieldName;
+public class BaseTransaction {
+    
+
+    private Map<String, Object> fieldData = new HashMap<>() ;
+
+    public void setFieldValue(String fieldName, Object value) {
+        fieldData.put(fieldName, value);
+    }
+
+    public Object getFieldValue(String fieldName) {
+        return fieldData.get(fieldName);
+    }
     
 }

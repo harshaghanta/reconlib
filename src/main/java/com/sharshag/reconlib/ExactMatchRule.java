@@ -29,10 +29,6 @@ public class ExactMatchRule extends BaseRule {
         if(lhsItems.size() == 0 || rhsItems.size() == 0)
             return;
 
-        Field lhsField = null, rhsField = null;
-
-         
-
         for (BaseTransaction lhsItem : lhsItems) {
 
             if( runContext.getMatchedLHSItems().contains(lhsItem.hashCode()))
@@ -43,26 +39,16 @@ public class ExactMatchRule extends BaseRule {
                 if( runContext.getMatchedRHSItems().contains(rhsItem.hashCode()))
                     continue;
 
-                try {
-                    lhsField = lhsItem.getClass().getDeclaredField(lhsFieldName);
-                    rhsField = rhsItem.getClass().getDeclaredField(rhsFieldName);
-                    lhsField.setAccessible(true);
-                    rhsField.setAccessible(true);
-                } catch (NoSuchFieldException e) {
-                    e.printStackTrace();
-                } catch (SecurityException e) {
-                    e.printStackTrace();
-                }
+                try {                    
+                    if(lhsItem.getFieldValue(lhsFieldName).equals(rhsItem.getFieldValue(rhsFieldName))) {
 
-                try {
-                    if(lhsField.get(lhsItem).equals(rhsField.get(rhsItem))) {
                         //Create new matching pair
                         MatchingPair matchingPair = new MatchingPair(lhsItem, rhsItem);
                         runContext.getMatchedLHSItems().add(lhsItem.hashCode());
                         runContext.getMatchedRHSItems().add(rhsItem.hashCode());
                         runContext.getMatchingPairs().add(matchingPair);
                     }
-                } catch (IllegalArgumentException | IllegalAccessException e) {                    
+                } catch (IllegalArgumentException e) {                    
                     e.printStackTrace();
                 }
             }

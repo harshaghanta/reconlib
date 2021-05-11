@@ -22,8 +22,15 @@ class ReconlibApplicationTests {
 
 		Date date = new Date();
 
-		BaseTransaction bt = new BankTransaction(date, 200, "");
-		BaseTransaction ct = new CashTransaction(date, 200, "");
+		BaseTransaction bt = new BaseTransaction();
+		bt.setFieldValue("date", date);
+		bt.setFieldValue("bankamount", 200);
+		bt.setFieldValue("comments", "");
+
+		BaseTransaction ct = new BaseTransaction();
+		ct.setFieldValue("date", date);
+		ct.setFieldValue("cashamount", 200);
+		ct.setFieldValue("comments", "");
 
 		List<BaseTransaction> bankTrans = Collections.singletonList(bt);
 		List<BaseTransaction> cashTrans = Collections.singletonList(ct);
@@ -46,8 +53,15 @@ class ReconlibApplicationTests {
 
 		for (int i = 1; i <= maxItems; i++) {
 
-			BaseTransaction bt = new BankTransaction(date, i, "");
-			BaseTransaction ct = new CashTransaction(date, maxItems - i + 1, "");
+			BaseTransaction bt = new BaseTransaction();
+			bt.setFieldValue("date", date);
+			bt.setFieldValue("bankamount", i);
+			bt.setFieldValue("comments", "");
+
+			BaseTransaction ct = new BaseTransaction();
+			ct.setFieldValue("date", date);
+			ct.setFieldValue("cashamount", maxItems - i + 1);
+			ct.setFieldValue("comments", "");
 			bankTrans.add(bt);
 			cashTrans.add(ct);
 		}
