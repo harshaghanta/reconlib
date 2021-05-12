@@ -18,7 +18,7 @@ class ReconlibApplicationTests {
 	}
 
 	@Test
-	public void exactMatchTest() {
+	public void exactMatchTestWithAmountOnly() {
 
 		Date date = new Date();
 
@@ -36,8 +36,45 @@ class ReconlibApplicationTests {
 		List<BaseTransaction> cashTrans = Collections.singletonList(ct);
 
 		ReconciliationEngine engine = new ReconciliationEngine();
-		BaseRule rule = new ExactMatchRule("bankamount", "cashamount");
+		
+		BaseRule rule = new One2One();
+		RuleCondition ruleCondition1 = new RuleCondition("bankamount", "cashamount", MatchType.MATCHES_EXACTLY);
+		rule.getRuleConditions().add(ruleCondition1);
+		
 		engine.addRule(rule);
+
+		List<MatchingPair> matchingPairs = engine.run(bankTrans, cashTrans);
+		assertEquals(1, matchingPairs.size());
+	}
+
+	@Test
+	public void exactMatchTestWithAmountAndComments() {
+
+		Date date = new Date();
+
+		BaseTransaction bt = new BaseTransaction();
+		bt.setFieldValue("date", date);
+		bt.setFieldValue("bankamount", 200);
+		bt.setFieldValue("comments", "test");
+
+		BaseTransaction ct = new BaseTransaction();
+		ct.setFieldValue("date", date);
+		ct.setFieldValue("cashamount", 200);
+		ct.setFieldValue("comments", "test");
+
+		List<BaseTransaction> bankTrans = Collections.singletonList(bt);
+		List<BaseTransaction> cashTrans = Collections.singletonList(ct);
+
+		ReconciliationEngine engine = new ReconciliationEngine();
+		
+		BaseRule rule = new One2One();
+		RuleCondition ruleCondition1 = new RuleCondition("bankamount", "cashamount", MatchType.MATCHES_EXACTLY);
+		RuleCondition ruleCondition2 = new RuleCondition("comments", "comments", MatchType.MATCHES_EXACTLY);
+		rule.getRuleConditions().add(ruleCondition1);
+		rule.getRuleConditions().add(ruleCondition2);
+		
+		engine.addRule(rule);
+
 		List<MatchingPair> matchingPairs = engine.run(bankTrans, cashTrans);
 		assertEquals(1, matchingPairs.size());
 	}
@@ -67,7 +104,9 @@ class ReconlibApplicationTests {
 		}
 
 		ReconciliationEngine engine = new ReconciliationEngine();
-		BaseRule rule = new ExactMatchRule("bankamount", "cashamount");
+		BaseRule rule = new One2One();
+		RuleCondition ruleCondition1 = new RuleCondition("bankamount", "cashamount", MatchType.MATCHES_EXACTLY);
+		rule.getRuleConditions().add(ruleCondition1);
 		engine.addRule(rule);
 
 		long startMillis = System.currentTimeMillis();
